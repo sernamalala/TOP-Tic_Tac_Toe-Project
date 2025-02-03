@@ -1,0 +1,22 @@
+{
+  "name": "top-tic_tac_toe-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sernamalala/TOP-Tic_Tac_Toe-Project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sernamalala/TOP-Tic_Tac_Toe-Project/issues"
+  },
+  "homepage": "https://github.com/sernamalala/TOP-Tic_Tac_Toe-Project#readme",
+  "dependencies": {
+    "prompt-sync": "^4.2.0"
+  }
+}
