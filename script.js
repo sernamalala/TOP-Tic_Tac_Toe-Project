@@ -24,10 +24,6 @@ const Gameboard = (function () {
                 return false;
             }
 
-        },
-        isTaken(position) {
-
-            //return true or false
         }
         ,
         displayBoard() {
@@ -58,16 +54,18 @@ function gamePlayer(name, points, gamePiece) {
 const P1 = gamePlayer("Serna", 0, "O");
 const P2 = gamePlayer("Kate", 1, "X");
 
-const winningRows = [
-    []
-]
+
 function GameController() {
     let currentPlayer = P1;
-
+    let gameOver = false;
     return {
 
-
         playTurn() {
+
+            if (gameOver) {
+                console.log("The game's over!!")
+                return;
+            }
 
             let row = Number(prompt(`${currentPlayer.userName} Enter the Row?[1-3]`))
             let column = Number(prompt(`${currentPlayer.userName} Enter the Column?[1-3]`))
@@ -81,10 +79,12 @@ function GameController() {
 
             if (this.checkWinner()) {
                 console.log("Winner is " + currentPlayer.userName);
+                gameOver = true;
                 return;
             }
             if (this.isTie()) {
                 console.log("It's a tie! Wrap it up");
+                gameOver = true;
                 return;
             }
 
