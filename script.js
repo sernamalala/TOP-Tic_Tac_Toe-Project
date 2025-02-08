@@ -141,35 +141,75 @@ function gameControl(player1,player2) {
     
 const Gameboard = gameboard();
 
-// const P1 = gameplayers("serna","X");
-// const P2 = gameplayers("ketsia","O");
+const P1 = gameplayers("serna","X");
+const P2 = gameplayers("ketsia","O");
 // const Gameflow = gameControl(P1,P2);
 
 // Gameboard.displayBoard();
 // Gameflow.takeATurn();
-const body = document.querySelector("body");
+
 function displayVisuals(){
+const body = document.querySelector("body");
+const board = document.getElementById("board");
 
     return{
         createBoard(){
-            const board = document.getElementById("board");
+            
 
             for(let i = 0; i<3; i++){
-            const rowCell = document.createElement("div");
-            rowCell.style.width = "100px";
-            rowCell.style.height = "100px";
-            rowCell.style.border = "1px solid red";
-            board.appendChild(rowCell);
-
-            for(let j = 0; j<2; j++){
+            for(let j = 0; j<3; j++){
                 const columnCell = document.createElement("div");
                 columnCell.style.width = "100px";
                 columnCell.style.height = "100px";
                 columnCell.style.border = "1px solid red";
-                columnCell.className = `${i}-${j}`;
+                columnCell.id = `${i}-${j}`;
+                columnCell.className = "cell";
                 board.appendChild(columnCell);
             }
             }
+        },
+
+
+        updateBoard(row,column,piece){
+            const boardCells = document.querySelectorAll(".cell");
+            boardCells.forEach((cell)=>{
+
+
+                if(cell.innerHTML === "" && cell.id === `${row}-${column}`){
+                    cell.innerHTML = piece;
+                    return true;
+                }
+                else{
+                console.log("This space is filled, try another block.")
+                return false;
+                }
+            })
+            
+        
+        }
+        ,
+        userPlays(){
+            
+            let currentPlayer = P1;
+            const boardCells = document.querySelectorAll(".cell");
+            boardCells.forEach((cell)=>{
+
+                cell.addEventListener("click", function (event) {
+                    
+                  let cellID = event.target.id;
+                    console.log(cellID);
+
+                    let values = cellID.split("-");
+                    let row = Number(values[0]);
+                    let column = Number(values[1]);
+                    
+                    this.updateBoard(row,column,currentPlayer.piece);
+                    
+                    currentPlayer = (currentPlayer === P1)?P2:P1;
+                }.bind(this));
+
+            });
+            
         }
     }
     
@@ -178,3 +218,4 @@ function displayVisuals(){
 
 const displayBoardVisually = displayVisuals();
 displayBoardVisually.createBoard();
+displayBoardVisually.userPlays();

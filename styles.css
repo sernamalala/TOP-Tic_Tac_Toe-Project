@@ -1,0 +1,17 @@
+body{
+    display: flex;
+    justify-content: center;
+}
+
+#board{
+    display: grid;
+    height: max-content;
+    grid-template-columns: 100px 100px 100px;
+    box-sizing: border-box;
+}
+.cell{
+    text-align: center;
+    align-content: center;
+    font-size: 3em;
+    font-family: monospace;
+}
