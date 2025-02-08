@@ -141,9 +141,40 @@ function gameControl(player1,player2) {
     
 const Gameboard = gameboard();
 
-const P1 = gameplayers("serna","X");
-const P2 = gameplayers("ketsia","O");
-const Gameflow = gameControl(P1,P2);
+// const P1 = gameplayers("serna","X");
+// const P2 = gameplayers("ketsia","O");
+// const Gameflow = gameControl(P1,P2);
 
-Gameboard.displayBoard();
-Gameflow.takeATurn();
+// Gameboard.displayBoard();
+// Gameflow.takeATurn();
+const body = document.querySelector("body");
+function displayVisuals(){
+
+    return{
+        createBoard(){
+            const board = document.getElementById("board");
+
+            for(let i = 0; i<3; i++){
+            const rowCell = document.createElement("div");
+            rowCell.style.width = "100px";
+            rowCell.style.height = "100px";
+            rowCell.style.border = "1px solid red";
+            board.appendChild(rowCell);
+
+            for(let j = 0; j<2; j++){
+                const columnCell = document.createElement("div");
+                columnCell.style.width = "100px";
+                columnCell.style.height = "100px";
+                columnCell.style.border = "1px solid red";
+                columnCell.className = `${i}-${j}`;
+                board.appendChild(columnCell);
+            }
+            }
+        }
+    }
+    
+
+}
+
+const displayBoardVisually = displayVisuals();
+displayBoardVisually.createBoard();
