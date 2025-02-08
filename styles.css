@@ -1,5 +1,7 @@
 body{
     display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
 }
 
@@ -14,4 +16,9 @@ body{
     align-content: center;
     font-size: 3em;
     font-family: monospace;
+}
+h2{
+    color: red;
+    font-size: 3em;
+    
 }

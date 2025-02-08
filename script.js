@@ -210,11 +210,35 @@ const board = document.getElementById("board");
 
             });
             
-        }
-    }
-    
+        },
+        resetBoard(){
+            const boardCells = document.querySelectorAll(".cell");
+            boardCells.forEach((cell)=>{
 
+                cell.innerHTML = "";
+            });
+        }
+    ,
+    checkWinner(){
+
+        const boardCells = document.querySelectorAll(".cell");
+            boardCells.forEach((cell)=>{
+
+                for(let i = 0; i<3; i++){
+                if(cell.innerHTML !== "" && cell.id===`${i}-` ){}
+                }
+            });
+        
+    }
+
+}}
+
+function createPlayers(){
+
+
+    
 }
+
 
 const displayBoardVisually = displayVisuals();
 displayBoardVisually.createBoard();
