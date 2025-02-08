@@ -1,144 +1,149 @@
-//Deals with the logic behind setting up the gameboard
-//make gameboard be called once? put parethesis around the function and a pair at the end of the function
-const Gameboard = (function () {
-    return {
-        board: [
-            ["", "", ""],
-            ["", "", ""],
-            ["", "", ""],
-        ],
-        resetBoard() {
-            this.board = [
-                ["", "", ""],
-                ["", "", ""],
-                ["", "", ""],
-            ]
-        },
-        updateBoard(row, column, gamePiece) {
-            if (this.board[row - 1][column - 1] === "") {
-                this.board[row - 1][column - 1] = gamePiece;
-                return true;
-            }
-            else {
-                alert("This spot is taken try another spot!!");
-                return false;
-            }
+//the gameboard
 
+function gameboard() {
+
+    return {
+        board:[
+            ["","",""],
+            ["","",""],
+            ["","",""],
+        ]
+        ,
+        resetBoard(){
+           this.board = [
+            ["","",""],
+            ["","",""],
+            ["","",""],
+        ];
         }
         ,
-        displayBoard() {
-            this.board.forEach((row) => {
-
-                console.log(row.map(element => element === "" ? " " : element).join(" | "));
-
-
-            });
-            console.log("----------")
+        updateBoard(row,column,piece){
+            
+            if(this.board[row-1][column-1] === ""){
+                this.board[row-1][column-1] = piece;
+                this.displayBoard();
+                return true;
+            }
+            else{
+            console.log("This space is filled, try another block.")
+            return false;
+            }
+            
         }
+        ,
+        displayBoard(){
+            this.board.forEach((row)=>{
+
+                const formattedRow = row.map((element)=>{
+
+                    if(element === ""){
+                        return  " ";
+                    }
+                    return element;
+                }).join(" | ");
+
+                console.log(formattedRow);
+               
+            })
+
+            console.log("**********");
+        },
+
     }
-})()
-
-function gamePlayer(name, points, gamePiece) {
-
-    return {
-        userName: name,
-        userPoints: points,
-        userPiece: gamePiece,
-        getUserStatus() {
-            console.log(`${this.userName}[${this.userPiece}] has ${this.userPoints} points.`)
-        }
-    }
-
+    
 }
 
-const P1 = gamePlayer("Serna", 0, "O");
-const P2 = gamePlayer("Kate", 1, "X");
+//players
+
+function gameplayers(name,piece){
+    return{
+
+        userName:name,
+        piece:piece,
+
+    }
+}
+
+//game control
 
 
-function GameController() {
-    let currentPlayer = P1;
+function gameControl(player1,player2) {
+
+    let currentPlayer = player1;
     let gameOver = false;
-    return {
+    
+    return{
+        takeATurn(){
+            if(gameOver) return;
 
-        playTurn() {
-
-            if (gameOver) {
-                console.log("The game's over!!")
-                return;
+            let row,column;
+            let validMovePlayed = false;
+            
+            while(!validMovePlayed){
+                row = Number(prompt("Enter a row [1-3]"));
+                column = Number(prompt("Enter a column [1-3]"));
+                validMovePlayed = Gameboard.updateBoard(row,column,currentPlayer.piece);
             }
-
-            let row = Number(prompt(`${currentPlayer.userName} Enter the Row?[1-3]`))
-            let column = Number(prompt(`${currentPlayer.userName} Enter the Column?[1-3]`))
-            while (!Gameboard.updateBoard(row, column, currentPlayer.userPiece)) {
-                row = Number(prompt(`${currentPlayer.userName} Enter the Row?[1-3]`))
-                column = Number(prompt(`${currentPlayer.userName} Enter the Column?[1-3]`))
-                Gameboard.displayBoard();
-            }
-
-            Gameboard.displayBoard();
-
-            if (this.checkWinner()) {
-                console.log("Winner is " + currentPlayer.userName);
+            
+            //if a winner is found
+            if(this.checkWinner()){
                 gameOver = true;
+                console.log(`${currentPlayer.userName} has Won!!`);
                 return;
             }
-            if (this.isTie()) {
-                console.log("It's a tie! Wrap it up");
+            //if all the tiles of the board are filled and no winner was found
+            if(this.isATie() && !this.checkWinner()){
                 gameOver = true;
+                console.log(`No one has won, it's a Tie. Try again`);
                 return;
             }
-
-            alert("next player turn");
-            currentPlayer = (currentPlayer === P1) ? P2 : P1;
-            this.playTurn();
-
+            
+            currentPlayer = currentPlayer === player1 ? player2 : player1;
+            this.takeATurn(); 
         },
-        checkWinner() {
-
-            let board = Gameboard.board;
-            for (let i = 0; i < 3; i++) {
-                if (board[i][0] !== "" && board[i][0] === board[i][1] && board[i][0] === board[i][2] && board[i][1] === board[i][0]) {
-
+        checkWinner(){
+            for(let i = 0; i<3; i++){
+                //rows
+                if(Gameboard.board[i][0] !== "" && Gameboard.board[i][0] === Gameboard.board[i][1] && Gameboard.board[i][0] === Gameboard.board[i][2]){
                     return true;
                 }
-
-                else if (board[0][i] !== "" && board[0][i] === board[1][i] && board[0][i] === board[2][i] && board[1][i] === board[2][i]) {
-
+                //columns
+                else if(Gameboard.board[0][i] !== "" && Gameboard.board[0][i] === Gameboard.board[1][i] && Gameboard.board[0][i] === Gameboard.board[2][i]){
                     return true;
                 }
-
-                else if (board[0][0] !== "" && board[0][0] === board[1][1] && board[0][0] === board[2][2] && board[1][1] === board[2][2]) {
-
-                    return true;
-                }
-
-                else if (board[0][2] !== "" && board[0][2] === board[1][1] && board[0][2] === board[2][0] && board[1][1] === board[2][0]) {
-
-                    return true;
-                }
-
+                
+               
+            }
+            //diagonals
+            if(Gameboard.board[0][0] !== "" && Gameboard.board[0][0] === Gameboard.board[1][1] && Gameboard.board[0][0] === Gameboard.board[2][2]){
+                return true;
+            }
+            else if(Gameboard.board[0][2] !== "" && Gameboard.board[0][2] === Gameboard.board[1][1] && Gameboard.board[0][2] === Gameboard.board[2][0]){
+                return true;
+            }
+            else{
                 return false;
             }
-
-
+           
 
         },
+        isATie(){
 
-        isTie() {
-            return Gameboard.board.flat().every(cell => cell !== "") && !this.checkWinner();
+            //this will return a boolean after checking each cell on the board
+           return Gameboard.board.flat().every(cell => cell !== "");
+                
+            }
+            
+
         }
-
-
     }
-}
 
+    
+const Gameboard = gameboard();
 
+const P1 = gameplayers("serna","X");
+const P2 = gameplayers("ketsia","O");
+const Gameflow = gameControl(P1,P2);
 
-
-
-// console.log(Gameboard.board)
 Gameboard.displayBoard();
-// GameController().playTurn(1, 3, P1);
-// GameController().playTurn(1, 3, P2);
-
-GameController().playTurn()
+Gameflow.takeATurn();
