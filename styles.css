@@ -1,0 +1,34 @@
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#board{
+    display: grid;
+    height: max-content;
+    grid-template-columns: 100px 100px 100px;
+    box-sizing: border-box;
+}
+.cell{
+    text-align: center;
+    align-content: center;
+    font-size: 3em;
+    font-family: monospace;
+}
+h2{
+    color: red;
+    font-size: 3em;
+}
+button{
+    padding: 15px;
+    font-size: 1.5em;
+    border: none;
+    background-color: lightgreen;
+    border-radius: 20px;
+}
+button:hover{
+    background-color: lightcoral;
+    border: 2px solid black;
+}

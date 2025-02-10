@@ -1,144 +1,182 @@
-//Deals with the logic behind setting up the gameboard
-//make gameboard be called once? put parethesis around the function and a pair at the end of the function
-const Gameboard = (function () {
-    return {
-        board: [
-            ["", "", ""],
-            ["", "", ""],
-            ["", "", ""],
-        ],
-        resetBoard() {
-            this.board = [
-                ["", "", ""],
-                ["", "", ""],
-                ["", "", ""],
-            ]
-        },
-        updateBoard(row, column, gamePiece) {
-            if (this.board[row - 1][column - 1] === "") {
-                this.board[row - 1][column - 1] = gamePiece;
-                return true;
-            }
-            else {
-                alert("This spot is taken try another spot!!");
-                return false;
-            }
 
+//players
+
+function gameplayers(name,piece){
+    return{
+
+        userName:name,
+        piece:piece,
+
+    }
+}
+
+
+const P1 = gameplayers("serna","X");
+const P2 = gameplayers("ketsia","O");
+// const Gameflow = gameControl(P1,P2);
+
+// Gameboard.displayBoard();
+// Gameflow.takeATurn();
+let gameOver = false;
+
+function displayVisuals(){
+const body = document.querySelector("body");
+const board = document.getElementById("board");
+let message = document.getElementById("message");
+
+    return{
+        createBoard(){
+            
+
+            for(let i = 0; i<3; i++){
+            for(let j = 0; j<3; j++){
+                const columnCell = document.createElement("div");
+                columnCell.style.width = "100px";
+                columnCell.style.height = "100px";
+                columnCell.style.border = "1px solid red";
+                columnCell.id = `${i}-${j}`;
+                columnCell.className = "cell";
+                board.appendChild(columnCell);
+            }
+            }
+        },
+
+
+        updateBoard(row,column,piece){
+            const boardCells = document.querySelectorAll(".cell");
+            boardCells.forEach((cell)=>{
+
+
+                if(cell.innerHTML === "" && cell.id === `${row}-${column}`){
+                    cell.innerHTML = piece;
+                    return true;
+                }
+                else{
+                console.log("This space is filled, try another block.");
+                return false;
+                }
+            })
+            
+        
         }
         ,
-        displayBoard() {
-            this.board.forEach((row) => {
+        userPlays(){
+            
+            if(gameOver) return;
+            
+            let currentPlayer = P1;
+            const boardCells = document.querySelectorAll(".cell");
+            boardCells.forEach((cell)=>{
 
-                console.log(row.map(element => element === "" ? " " : element).join(" | "));
+                cell.addEventListener("click", function (event) {
+                    
+                    //stop game
 
+                    if(gameOver || event.target.innerHTML !== "") return;
+
+                  let cellID = event.target.id;
+                    console.log(cellID);
+
+                    let values = cellID.split("-");
+                    let row = Number(values[0]);
+                    let column = Number(values[1]);
+                    this.updateBoard(row,column,currentPlayer.piece);
+                    message.innerText = `${currentPlayer.userName} has played ${currentPlayer.piece}`
+                    if(this.checkWinner()){
+                        gameOver = true;
+                        message.innerText = `${currentPlayer.userName} has Won!`
+                    }
+                    if(this.isATie()){
+                        gameOver = true;
+                        message.innerText = `Its a Tie, play again!!`
+                    }
+                    
+                    
+                    currentPlayer = (currentPlayer === P1)?P2:P1;
+                }.bind(this));
 
             });
-            console.log("----------")
-        }
-    }
-})()
-
-function gamePlayer(name, points, gamePiece) {
-
-    return {
-        userName: name,
-        userPoints: points,
-        userPiece: gamePiece,
-        getUserStatus() {
-            console.log(`${this.userName}[${this.userPiece}] has ${this.userPoints} points.`)
-        }
-    }
-
-}
-
-const P1 = gamePlayer("Serna", 0, "O");
-const P2 = gamePlayer("Kate", 1, "X");
-
-
-function GameController() {
-    let currentPlayer = P1;
-    let gameOver = false;
-    return {
-
-        playTurn() {
-
-            if (gameOver) {
-                console.log("The game's over!!")
-                return;
-            }
-
-            let row = Number(prompt(`${currentPlayer.userName} Enter the Row?[1-3]`))
-            let column = Number(prompt(`${currentPlayer.userName} Enter the Column?[1-3]`))
-            while (!Gameboard.updateBoard(row, column, currentPlayer.userPiece)) {
-                row = Number(prompt(`${currentPlayer.userName} Enter the Row?[1-3]`))
-                column = Number(prompt(`${currentPlayer.userName} Enter the Column?[1-3]`))
-                Gameboard.displayBoard();
-            }
-
-            Gameboard.displayBoard();
-
-            if (this.checkWinner()) {
-                console.log("Winner is " + currentPlayer.userName);
-                gameOver = true;
-                return;
-            }
-            if (this.isTie()) {
-                console.log("It's a tie! Wrap it up");
-                gameOver = true;
-                return;
-            }
-
-            alert("next player turn");
-            currentPlayer = (currentPlayer === P1) ? P2 : P1;
-            this.playTurn();
-
+            
         },
-        checkWinner() {
-
-            let board = Gameboard.board;
-            for (let i = 0; i < 3; i++) {
-                if (board[i][0] !== "" && board[i][0] === board[i][1] && board[i][0] === board[i][2] && board[i][1] === board[i][0]) {
-
-                    return true;
-                }
-
-                else if (board[0][i] !== "" && board[0][i] === board[1][i] && board[0][i] === board[2][i] && board[1][i] === board[2][i]) {
-
-                    return true;
-                }
-
-                else if (board[0][0] !== "" && board[0][0] === board[1][1] && board[0][0] === board[2][2] && board[1][1] === board[2][2]) {
-
-                    return true;
-                }
-
-                else if (board[0][2] !== "" && board[0][2] === board[1][1] && board[0][2] === board[2][0] && board[1][1] === board[2][0]) {
-
-                    return true;
-                }
-
-                return false;
-            }
-
-
-
-        },
-
-        isTie() {
-            return Gameboard.board.flat().every(cell => cell !== "") && !this.checkWinner();
+        resetBoard(){
+            const boardCells = document.querySelectorAll(".cell");
+            boardCells.forEach((cell)=>{
+                cell.innerHTML = "";
+            });
         }
+    ,
+    checkWinner(){
+        //get every cell by spreading into an array
+        //nodelist into an array
+        const allCells = [...document.querySelectorAll(".cell")]
+            
+        const board = [
+            //rows of board
+            allCells.slice(0,3),
+            allCells.slice(3,6),
+            allCells.slice(6,9)
+        ];
+        
+        for (let i = 0; i < board.length; i++) {
+            //check rows
+            if(board[i][0].innerHTML !== "" && board[i][0].innerHTML === board[i][1].innerHTML && board[i][0].innerHTML === board[i][2].innerHTML ){
+                return true;
+            }
+            
+            //check columns
+            else if(board[0][i].innerHTML !== "" && board[0][i].innerHTML === board[1][i].innerHTML && board[0][i].innerHTML === board[2][i].innerHTML ){
+                return true;
+            }
+            
+        }
+        //diagonals
+        if(board[0][0].innerHTML!=="" && board[0][0].innerHTML === board[1][1].innerHTML && board[0][0].innerHTML === board[2][2].innerHTML){
+            return true;
+        }
+        
+        else if(board[0][2].innerHTML!=="" && board[0][2].innerHTML === board[1][1].innerHTML && board[0][2].innerHTML === board[2][0].innerHTML){
+            return true;
+        }
+        
+        else{
+            return false;
+        }
+    },
 
-
+    isATie(){
+        //get every cell by spreading into an array
+        //nodelist into an array
+        const allCells = [...document.querySelectorAll(".cell")]
+            
+        const board = [
+            //rows of board
+            allCells.slice(0,3),
+            allCells.slice(3,6),
+            allCells.slice(6,9)
+        ];
+        return board.flat().every(cell => cell.innerHTML !== "");
     }
+
+}}
+
+const restartButton = document.getElementById("restart");
+restartButton.addEventListener("click",function () {
+    let message = document.getElementById("message");
+    message.innerHTML = "";
+
+    gameOver = false;
+    displayBoardVisually.resetBoard();
+    displayBoardVisually.userPlays();
+
+})
+
+function createPlayers(){
+
+
+    
 }
 
 
-
-
-
-// console.log(Gameboard.board)
-Gameboard.displayBoard();
-// GameController().playTurn(1, 3, P1);
-// GameController().playTurn(1, 3, P2);
-
-GameController().playTurn()
+const displayBoardVisually = displayVisuals();
+displayBoardVisually.createBoard();
+displayBoardVisually.userPlays();
