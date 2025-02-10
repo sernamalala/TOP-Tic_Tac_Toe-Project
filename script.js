@@ -67,10 +67,11 @@ function gameplayers(name,piece){
 //game control
 
 
-function gameControl(player1,player2) {
 
+function gameControl(player1,player2) {
+let gameOver = false;
     let currentPlayer = player1;
-    let gameOver = false;
+    
     
     return{
         takeATurn(){
@@ -147,11 +148,11 @@ const P2 = gameplayers("ketsia","O");
 
 // Gameboard.displayBoard();
 // Gameflow.takeATurn();
+let gameOver = false;
 
 function displayVisuals(){
 const body = document.querySelector("body");
 const board = document.getElementById("board");
-let gameOver = false;
 let message = document.getElementById("message");
 
     return{
@@ -200,6 +201,10 @@ let message = document.getElementById("message");
 
                 cell.addEventListener("click", function (event) {
                     
+                    //stop game
+
+                    if(gameOver || event.target.innerHTML !== "") return;
+
                   let cellID = event.target.id;
                     console.log(cellID);
 
@@ -287,9 +292,13 @@ let message = document.getElementById("message");
 
 const restartButton = document.getElementById("restart");
 restartButton.addEventListener("click",function () {
+    let message = document.getElementById("message");
+    message.innerHTML = "";
 
+    gameOver = false;
     displayBoardVisually.resetBoard();
-    
+    displayBoardVisually.userPlays();
+
 })
 
 function createPlayers(){
