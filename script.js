@@ -151,6 +151,8 @@ const P2 = gameplayers("ketsia","O");
 function displayVisuals(){
 const body = document.querySelector("body");
 const board = document.getElementById("board");
+let gameOver = false;
+let message = document.getElementById("message");
 
     return{
         createBoard(){
@@ -190,6 +192,8 @@ const board = document.getElementById("board");
         ,
         userPlays(){
             
+            if(gameOver) return;
+            
             let currentPlayer = P1;
             const boardCells = document.querySelectorAll(".cell");
             boardCells.forEach((cell)=>{
@@ -202,8 +206,17 @@ const board = document.getElementById("board");
                     let values = cellID.split("-");
                     let row = Number(values[0]);
                     let column = Number(values[1]);
-                    
                     this.updateBoard(row,column,currentPlayer.piece);
+                    message.innerText = `${currentPlayer.userName} has played ${currentPlayer.piece}`
+                    if(this.checkWinner()){
+                        gameOver = true;
+                        message.innerText = `${currentPlayer.userName} has Won!`
+                    }
+                    if(this.isATie()){
+                        gameOver = true;
+                        message.innerText = `Its a Tie, play again!!`
+                    }
+                    
                     
                     currentPlayer = (currentPlayer === P1)?P2:P1;
                 }.bind(this));
@@ -214,24 +227,70 @@ const board = document.getElementById("board");
         resetBoard(){
             const boardCells = document.querySelectorAll(".cell");
             boardCells.forEach((cell)=>{
-
                 cell.innerHTML = "";
             });
         }
     ,
     checkWinner(){
-
-        const boardCells = document.querySelectorAll(".cell");
-            boardCells.forEach((cell)=>{
-
-                for(let i = 0; i<3; i++){
-                if(cell.innerHTML !== "" && cell.id===`${i}-` ){}
-                }
-            });
+        //get every cell by spreading into an array
+        //nodelist into an array
+        const allCells = [...document.querySelectorAll(".cell")]
+            
+        const board = [
+            //rows of board
+            allCells.slice(0,3),
+            allCells.slice(3,6),
+            allCells.slice(6,9)
+        ];
         
+        for (let i = 0; i < board.length; i++) {
+            //check rows
+            if(board[i][0].innerHTML !== "" && board[i][0].innerHTML === board[i][1].innerHTML && board[i][0].innerHTML === board[i][2].innerHTML ){
+                return true;
+            }
+            
+            //check columns
+            else if(board[0][i].innerHTML !== "" && board[0][i].innerHTML === board[1][i].innerHTML && board[0][i].innerHTML === board[2][i].innerHTML ){
+                return true;
+            }
+            
+        }
+        //diagonals
+        if(board[0][0].innerHTML!=="" && board[0][0].innerHTML === board[1][1].innerHTML && board[0][0].innerHTML === board[2][2].innerHTML){
+            return true;
+        }
+        
+        else if(board[0][2].innerHTML!=="" && board[0][2].innerHTML === board[1][1].innerHTML && board[0][2].innerHTML === board[2][0].innerHTML){
+            return true;
+        }
+        
+        else{
+            return false;
+        }
+    },
+
+    isATie(){
+        //get every cell by spreading into an array
+        //nodelist into an array
+        const allCells = [...document.querySelectorAll(".cell")]
+            
+        const board = [
+            //rows of board
+            allCells.slice(0,3),
+            allCells.slice(3,6),
+            allCells.slice(6,9)
+        ];
+        return board.flat().every(cell => cell.innerHTML !== "");
     }
 
 }}
+
+const restartButton = document.getElementById("restart");
+restartButton.addEventListener("click",function () {
+
+    displayBoardVisually.resetBoard();
+    
+})
 
 function createPlayers(){
 

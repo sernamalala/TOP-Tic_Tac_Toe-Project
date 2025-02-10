@@ -20,5 +20,15 @@ body{
 h2{
     color: red;
     font-size: 3em;
-    
+}
+button{
+    padding: 15px;
+    font-size: 1.5em;
+    border: none;
+    background-color: lightgreen;
+    border-radius: 20px;
+}
+button:hover{
+    background-color: lightcoral;
+    border: 2px solid black;
 }
